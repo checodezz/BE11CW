@@ -1,5 +1,4 @@
-
-require("./db");
+require("./db/db");
 const Car = require("./models/car");
 
 async function addCarData() {
