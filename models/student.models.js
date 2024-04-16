@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+/* 
 const studentSchema = new mongoose.Schema({
   registrationNumber : String,
   studentId : Number,
@@ -12,3 +12,18 @@ const studentSchema = new mongoose.Schema({
 const Student = mongoose.model("Student", studentSchema)
 module.exports = Student;
 
+ */
+
+const studentSchema =  new mongoose.Schema({
+  registrationNumber : String,
+  studentId : Number,
+  studentName : String,
+  studentProfileUrl : String,
+  faherOrGuardian : String,
+  standard : String,
+  emergencyContact : Number
+})
+
+const Student = mongoose.model("Student", studentSchema)
+
+module.exports = Student
