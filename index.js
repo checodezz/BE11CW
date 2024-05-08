@@ -58,19 +58,49 @@ app.get("/movies", async (req, res) => {
 async function readMovieByDirector(directorName) {
   try {
     const movieByDirector = await Movie.find({ director: directorName });
-    console.log(movieByDirector);
+    return movieByDirector;
   } catch (error) {
     throw error;
   }
 }
 
-app.get("/movies/director/:directorName", aynnc (req, res) => {
+app.get("/movies/director/:directorName", async (req, res) => {
   try {
-    
-  }catch(error){
-    res.status(500).json({error : })
+    const movies = await readMovieByDirector(req.params.directorName);
+    if (movies.length != 0) {
+      res.json(movies);
+    } else {
+      res.status(404).json({ error: "No movies found." });
+    }
+  } catch (error) {
+    res.status(500).json({ error: "Failed to fetch movies" });
+  }
+});
+
+//read movies by genre 
+
+async function readMovieByGenre(genreName){
+try {
+  const movieByGenre = await Movie.find({genre : genreName})
+  return movieByGenre
+} catch (error){
+  throw error
+}
+ }
+
+app.get("/movies/genres/:genreName", async (req,res) => {
+  try {
+     const movie = await readMovieByGenre(req.params.genreName);
+    if(movie.length != 0) {
+      res.json(movie)
+    } else {
+      res.status(404).json({error : "Movie not found."})
+    }
+  } catch(error){
+    res.status(500).json({"error" : "Failed to fetch movies."})
   }
 })
+
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
