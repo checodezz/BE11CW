@@ -1,47 +1,77 @@
-require("./db/db");
-const Car = require("./models/car");
+const express = require("express");
+const app = express();
 
-async function addCarData() {
-  const newCar = new Car({
-    make: "Toyota",
-    model: "Corolla",
-    year: 2022,
-  });
+const { initializeDatabase } = require("./db/db");
+const Movie = require("./models/movies.models");
+app.use(express.json());
+initializeDatabase();
 
+//find a movie with a particular title
+async function readMovieByTitle(movieTitle) {
   try {
-    const savedCar = await newCar.save();
-    console.log("Car data saved successfully:", savedCar);
+    const movie = await Movie.findOne({ title: movieTitle });
+    return movie;
   } catch (error) {
-    console.error("Error saving car data:", error);
+    throw error;
   }
 }
 
-addCarData();
-
-async function addAnotherCarData() {
-  const anotherCar = new Car({
-    make: "Honda",
-    model: "Civic",
-    year: 2023,
-  });
-
+app.get("/movies/:title", async (req, res) => {
   try {
-    const savedAnotherCar = await anotherCar.save();
-    console.log("Another car data saved successfully:", savedAnotherCar);
+    const movie = await readMovieByTitle(req.params.title);
+    if (movie) {
+      res.json(movie);
+    } else {
+      res.status(404).json({ error: "Movie not found" });
+    }
   } catch (error) {
-    console.error("Error saving another car data:", error);
+    res.status(500).json({ error: "Failed to fetch movioe" });
+  }
+});
+
+//to get all the movies from the db
+
+async function readAllMovies() {
+  try {
+    const allMovies = await Movie.find();
+    return allMovies;
+  } catch (error) {
+    throw error;
   }
 }
 
-addAnotherCarData();
-
-async function findAllCars() {
+app.get("/movies", async (req, res) => {
   try {
-    const allCars = await Car.find();
-    console.log("All cars in the database:", allCars);
+    const movies = await readAllMovies();
+    if (movies.length != 0) {
+      res.json(movies);
+    } else {
+      res.status(404).json({ error: "No movies found." });
+    }
   } catch (error) {
-    console.error("Error fetching all cars:", error);
+    res.status(500).json({ error: "Failed to fetch movies." });
+  }
+});
+
+//get movie by director name
+
+async function readMovieByDirector(directorName) {
+  try {
+    const movieByDirector = await Movie.find({ director: directorName });
+    console.log(movieByDirector);
+  } catch (error) {
+    throw error;
   }
 }
 
-findAllCars();
+app.get("/movies/director/:directorName", aynnc (req, res) => {
+  try {
+    
+  }catch(error){
+    res.status(500).json({error : })
+  }
+})
+const PORT = 3000;
+app.listen(PORT, () => {
+  console.log(`server is running on port ${PORT}`);
+});
