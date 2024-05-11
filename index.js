@@ -136,6 +136,25 @@ app.get("/movies/genres/:genreName", async (req, res) => {
   }
 });
 
+async function deleteMovie(movieId){
+  try{
+    const deletedMovie  = await Movie.findByIdAndDelete(movieId);
+    return deletedMovie;
+  }catch(error){
+    throw error
+  }
+}
+
+app.delete("/movie/:movieId", async (req, res) => {
+  try {
+    const deletedMovie =  await deleteMovie(req.params.movieId);
+    res.status(200).json({message : "Movie deleted successfully."})
+  } catch(error){
+    res.status(500).json({error : "failed to delete movie"})
+  }
+})
+
+
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`server is running on port ${PORT}`);
