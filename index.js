@@ -1,5 +1,13 @@
 const express = require("express");
 const app = express();
+const cors = require("cors");
+
+const corsOptions = {
+  origin: "*",
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 const { initializeDatabase } = require("./db/db");
 const Movie = require("./models/movies.models");
 app.use(express.json());
@@ -60,7 +68,7 @@ app.get("/movies/:title", async (req, res) => {
       res.status(404).json({ error: "Movie not found" });
     }
   } catch (error) {
-    res.status(500).json({ error: "Failed to fetch movioe" });
+    res.status(500).json({ error: "Failed to fetch movie" });
   }
 });
 
@@ -169,7 +177,9 @@ app.post("/movies/:movieId", async (req, res) => {
   try {
     const updatedMovie = await updateMovie(req.params.movieId, req.body);
     if (updatedMovie) {
-      res.status(200).json({ message: "Movie upated successfully" , movie : updatedMovie});
+      res
+        .status(200)
+        .json({ message: "Movie upated successfully", movie: updatedMovie });
     } else {
       res.status(404).json({ error: "Movie not found." });
     }
